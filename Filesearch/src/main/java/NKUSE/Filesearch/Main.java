@@ -19,7 +19,7 @@ public class Main
 			if(keyword.equals(":wq"))
 				break;
 			Search.search(keyword, indexdir);
-			
 		}
+		scanner.close();
 	}
 }
