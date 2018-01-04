@@ -57,29 +57,74 @@ public class BuildIndex
 				File file = new File(listname.get(i));
 				byte[] file_byte = PreFile.getBytesFromFile(file);
 				Document document = new Document();
+
+				String name = file.getName();
+				String path = file.getAbsolutePath();
+				String content = "";
+				String type = "";
+
+				Field fileName = new Field("fileName", name, TextField.TYPE_STORED);
+				Field filePath = new Field("filePath", path, TextField.TYPE_STORED);
+
+				document.add(fileName);
+				document.add(filePath);
+
 				if (file.getName().toLowerCase().endsWith(".txt") || file.getName().toLowerCase().endsWith(".c")
 						|| file.getName().toLowerCase().endsWith(".h") || file.getName().toLowerCase().endsWith(".S")
 						|| file.getName().toLowerCase().endsWith(".cpp")
 						|| file.getName().toLowerCase().endsWith(".hpp"))
 				{
-					System.out.println("filepath=" + file.getAbsolutePath());
-					String path = file.getAbsolutePath();
-					String name = file.getName();
-					String content = PreFile.getTextFormTxt(file_byte);//支持各种编码
-					System.out.println("content="+content);
-					Field fileName = new Field("fileName", name, TextField.TYPE_STORED);
-					Field filePath = new Field("filePath", path, TextField.TYPE_STORED);
-					Field fileContent = new Field("fileContent", content, TextField.TYPE_STORED);
-					Field fileType = new Field("fileType", "txt", TextField.TYPE_STORED);
-					document.add(fileName);
-					document.add(fileContent);
-					document.add(filePath);
-					document.add(fileType);
+					content = PreFile.getTextFormTxt(file_byte);// 支持各种编码
+					type = "text";
 				}
-				else if(file.getName().toLowerCase().endsWith(".ppt") || file.getName().toLowerCase().endsWith(".pptx"))
+				// TODO:many warnings here.
+				else if (file.getName().toLowerCase().endsWith(".pdf"))
 				{
-					
+					content = PreFile.getTextFormPDF(file_byte);
+					type = "pdf";
 				}
+				// Word97-2003
+				else if (file.getName().toLowerCase().endsWith(".doc"))
+				{
+					content = PreFile.getTextFromWord(file_byte);
+					type = "doc";
+				}
+				// Word2007+
+				else if (file.getName().toLowerCase().endsWith(".docx"))
+				{
+					content = PreFile.getTextFromWord2007(file_byte);
+					type = "docx";
+				}
+				// PPT97-2003
+				else if (file.getName().toLowerCase().endsWith(".ppt"))
+				{
+					content = PreFile.getTextFromPPT(file_byte);
+					type = "ppt";
+				}
+				// PPT2007+
+				else if (file.getName().toLowerCase().endsWith(".pptx"))
+				{
+					content = PreFile.getTextFromPPT2007(file_byte);
+					type = "pptx";
+				}
+				// Excel97-2003
+				else if (file.getName().toLowerCase().endsWith(".xls"))
+				{
+					content = PreFile.getTextFromExcel(file_byte);
+					type = "xls";
+				}
+				// Excel2007+
+				else if (file.getName().toLowerCase().endsWith(".xlsx"))
+				{
+					content = PreFile.getTextFromExcel2007(file_byte);
+					type = "xlsx";
+				}
+				System.out.println("Content="+content);
+				Field fileContent = new Field("fileContent", content, TextField.TYPE_STORED);
+				Field fileType = new Field("fileType", type, TextField.TYPE_STORED);
+				document.add(fileContent);
+				document.add(fileType);
+
 				indexWriter.addDocument(document);
 			}
 		} catch (Exception e)
