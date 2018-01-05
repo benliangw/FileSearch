@@ -53,9 +53,11 @@ public class Search
 				String file_type = document.get("fileType"); 
 				String file_path = document.get("filePath");
 				String file_name = document.get("fileName");
+				String file_content = document.get("fileContent");
 				System.out.println("Name:"+file_name);
 				System.out.println("\tPath:"+file_path);
 				System.out.println("\tType:"+file_type);
+				System.out.println("\tContent:"+file_content);
 			}
 		}
 		catch (Exception e)

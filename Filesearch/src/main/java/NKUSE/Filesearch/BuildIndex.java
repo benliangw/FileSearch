@@ -1,8 +1,10 @@
 package NKUSE.Filesearch;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -15,6 +17,7 @@ import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.apache.tika.Tika;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 public class BuildIndex
@@ -55,73 +58,26 @@ public class BuildIndex
 			for (int i = 0; i < listname.size(); i++)
 			{
 				File file = new File(listname.get(i));
-				byte[] file_byte = PreFile.getBytesFromFile(file);
+				Tika tika = new Tika();
 				Document document = new Document();
-
+				
 				String name = file.getName();
 				String path = file.getAbsolutePath();
-				String content = "";
-				String type = "";
+				String content = tika.parseToString(file);
+				String type = tika.detect(file);
 
 				Field fileName = new Field("fileName", name, TextField.TYPE_STORED);
 				Field filePath = new Field("filePath", path, TextField.TYPE_STORED);
-
-				document.add(fileName);
-				document.add(filePath);
-
-				if (file.getName().toLowerCase().endsWith(".txt") || file.getName().toLowerCase().endsWith(".c")
-						|| file.getName().toLowerCase().endsWith(".h") || file.getName().toLowerCase().endsWith(".S")
-						|| file.getName().toLowerCase().endsWith(".cpp")
-						|| file.getName().toLowerCase().endsWith(".hpp"))
-				{
-					content = PreFile.getTextFormTxt(file_byte);// 支持各种编码
-					type = "text";
-				}
-				// TODO:many warnings here.
-				else if (file.getName().toLowerCase().endsWith(".pdf"))
-				{
-					content = PreFile.getTextFormPDF(file_byte);
-					type = "pdf";
-				}
-				// Word97-2003
-				else if (file.getName().toLowerCase().endsWith(".doc"))
-				{
-					content = PreFile.getTextFromWord(file_byte);
-					type = "doc";
-				}
-				// Word2007+
-				else if (file.getName().toLowerCase().endsWith(".docx"))
-				{
-					content = PreFile.getTextFromWord2007(file_byte);
-					type = "docx";
-				}
-				// PPT97-2003
-				else if (file.getName().toLowerCase().endsWith(".ppt"))
-				{
-					content = PreFile.getTextFromPPT(file_byte);
-					type = "ppt";
-				}
-				// PPT2007+
-				else if (file.getName().toLowerCase().endsWith(".pptx"))
-				{
-					content = PreFile.getTextFromPPT2007(file_byte);
-					type = "pptx";
-				}
-				// Excel97-2003
-				else if (file.getName().toLowerCase().endsWith(".xls"))
-				{
-					content = PreFile.getTextFromExcel(file_byte);
-					type = "xls";
-				}
-				// Excel2007+
-				else if (file.getName().toLowerCase().endsWith(".xlsx"))
-				{
-					content = PreFile.getTextFromExcel2007(file_byte);
-					type = "xlsx";
-				}
-				System.out.println("Content="+content);
 				Field fileContent = new Field("fileContent", content, TextField.TYPE_STORED);
 				Field fileType = new Field("fileType", type, TextField.TYPE_STORED);
+
+				System.out.println("name="+name);
+				System.out.println("path="+path);
+				System.out.println("content="+content);
+				System.out.println("type="+type);
+				
+				document.add(fileName);
+				document.add(filePath);
 				document.add(fileContent);
 				document.add(fileType);
 
