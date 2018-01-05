@@ -1,6 +1,8 @@
 package NKUSE.Filesearch;
 
+import java.awt.AWTException;
 import java.io.File;
+import java.util.Scanner;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
@@ -11,14 +13,32 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.highlight.QueryScorer;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 public class Search
-{
+{	
+	public static void search_main(int index) throws AWTException
+	{
+		String index_path = BuildIndex.index_list[index];
+		String search_path = BuildIndex.search_list[index];
+		Scanner scanner = new Scanner(System.in);
+		ConsoleControl.clear();
+		System.out.println("您当前搜索的目录："+search_path);
+		while(true)
+		{
+			System.out.println("请输入您想搜索的内容, 输入\":q!\"以退出");
+			String keyWord = scanner.nextLine();
+			if(keyWord.isEmpty())
+				continue;
+			if(keyWord.equals(":q!"))
+				break;
+			search(keyWord, index_path);
+		}
+	}
+	
 	public static void search(String keyWord, String index_path)
 	{
 		try
@@ -53,11 +73,9 @@ public class Search
 				String file_type = document.get("fileType"); 
 				String file_path = document.get("filePath");
 				String file_name = document.get("fileName");
-				String file_content = document.get("fileContent");
 				System.out.println("Name:"+file_name);
 				System.out.println("\tPath:"+file_path);
 				System.out.println("\tType:"+file_type);
-				System.out.println("\tContent:"+file_content);
 			}
 		}
 		catch (Exception e)

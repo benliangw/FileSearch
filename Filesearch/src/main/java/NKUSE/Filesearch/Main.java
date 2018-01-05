@@ -1,24 +1,56 @@
 package NKUSE.Filesearch;
 
-import java.io.FileNotFoundException;
+import java.awt.AWTException;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main
 {
-	public static void main(String[] args) throws FileNotFoundException
+	public static void main(String[] args) throws AWTException, IOException
 	{
-		System.out.println("请输入要建立索引的文件夹的绝对路径");//TODO:实现文件框选择文件夹
-		String indexdir = "F://IR_test//index"; //TODO:可以建立多个索引
 		Scanner scanner = new Scanner(System.in);
-		String rootPath = scanner.nextLine();
-		BuildIndex.createIndex(rootPath, indexdir);
-		System.out.println("建立索引成功，请输入要查询的词语");//TODO:多次查询
+		BuildIndex.Initial();
 		while(true)
 		{
-			String keyword = scanner.nextLine();
-			if(keyword.equals(":wq"))
+			scanner = new Scanner(System.in);
+			ConsoleControl.clear();
+			ConsoleControl.welcome();
+			String choose_num = scanner.nextLine();
+			if(choose_num.equals("1"))
+			{
+				ConsoleControl.clear();
+				BuildIndex.ShowAllIndex();
+			}
+			else if(choose_num.equals("2"))
+			{
+				ConsoleControl.clear();
+				BuildIndex.buildIndex_main();
+			}
+			else if(choose_num.equals("3"))
+			{
+				ConsoleControl.clear();
+				BuildIndex.ShowAllIndex();
+			}
+			else if(choose_num.equals("4"))
+			{
+				ConsoleControl.clear();
+				BuildIndex.ClearAllIndex();
+			}
+			else if(choose_num.equals("5"))
+			{
+				ConsoleControl.clear();
+				BuildIndex.ClearTheIndex();
+			}
+			else if(choose_num.equals("6"))
+			{
+				System.out.println("谢谢使用,再见！");
 				break;
-			Search.search(keyword, indexdir);
+			}
+			else 
+			{
+				System.out.println("输入错误，请重新输入!");
+				continue;
+			}
 		}
 		scanner.close();
 	}
