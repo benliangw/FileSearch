@@ -9,6 +9,29 @@ public class ConsoleControl
 {
 	public static void clear() throws AWTException
 	{
+		for(int i = 0; i < 30; i++)
+			System.out.print("\n");  
+	    System.out.flush(); 
+		/*
+		try
+	    {
+	        String os = System.getProperty("os.name");
+
+	        if (os.contains("Windows"))
+	        {
+	            Runtime.getRuntime().exec("cls");
+	        }
+	        else
+	        {
+	            Runtime.getRuntime().exec("clear");
+	        }
+	    }
+	    catch (Exception exception)
+	    {
+	        //  Handle exception.
+	    }
+	    */
+		/*
 		Robot r = new Robot();
 		r.mousePress(InputEvent.BUTTON3_MASK); // 按下鼠标右键
 		r.mouseRelease(InputEvent.BUTTON3_MASK); // 释放鼠标右键
@@ -17,6 +40,7 @@ public class ConsoleControl
 		r.keyRelease(KeyEvent.VK_R); // 释放R键
 		r.keyRelease(KeyEvent.VK_CONTROL); // 释放Ctrl键
 		r.delay(100);
+		*/
 	}
 	
 	public static void welcome()
